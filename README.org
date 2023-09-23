@@ -1,0 +1,63 @@
+* Rinha de Backend Rails - ACdeSouza
+
+** Tooling
+
+   - Ruby 3.2.2
+   - Rails 7.0.8
+   - Database :: PostgreSQL 16
+   - Load balance :: Nginx
+
+
+
+** Configuration
+
+   The Rails application was created using the following command:
+
+   #+begin_src bash
+   $ rails new rinha_backend --skip-action-mailer --skip-action-mailbox --skip-action-text --skip-active-storage --skip-action-cable --skip-hotwire --skip-jbuilder --database=postgresql
+   #+end_src
+
+   I have one PostgreSQL database accessed by 2 web containers with the Rails app behind a Nginx Load balance.
+
+   The Database config will be read from the .env file. The following envs are expected:
+
+   #+begin_src bash
+   # PostgreSQL
+   POSTGRES_USER=XXXX
+   POSTGRES_PASSWORD=YYYY
+
+   # Rails
+   POSTGRES_HOST=db # This is the service name on docker-composer.yml
+   RAILS_DEVELOPMENT_HOSTS=web # This is the host exposed by nginx on nginx.conf
+   #+end_src
+
+
+*** Running
+
+    Everything was configured by Docker and Docker Compose.
+
+    To start the whole stuff and access it on http://web:9999
+
+    #+begin_src bash
+    $ docker-compose up
+    #+end_src
+
+*** Rails CLI
+
+    Since there is 2 Web Containers, just pick one to run the command.
+
+    - For create the database
+      #+begin_src bash
+      $ docker-compose run web_1 rails db:create
+      #+end_src
+
+    - For run migrations
+      #+begin_src bash
+      $ docker-compose run web_1 rails db:migrate
+      #+end_src
+
+    - For access Rails Console
+      #+begin_src bash
+      $ docker-compose run web_1 rails console
+      #+end_src
+
