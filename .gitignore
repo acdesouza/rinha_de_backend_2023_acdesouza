@@ -23,3 +23,6 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# Don't EVER commit .env file
+.env

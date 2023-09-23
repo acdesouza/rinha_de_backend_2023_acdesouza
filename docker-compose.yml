@@ -1,0 +1,26 @@
+version: '3.9'
+services:
+  db:
+    image: 'postgres:latest'
+    ports:
+      - '5432:5432'
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    # environment:
+    #   ENV_VAR: potato
+    env_file:
+      - .env
+  rails:
+    build:
+      context: .
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/docker/app # add our local code to dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - db # add all dependant container
+
+volumes:
+  pg-data: # named volume
