@@ -61,3 +61,7 @@
       $ docker-compose run web_1 rails console
       #+end_src
 
+*** Manually testing
+
+    - Create person: ~curl -i -X POST http://localhost:9999/pessoas -H 'Accept: application/json'  -H 'Content-Type: application/json' -d '{"apelido":"ac","nome":"Antonio Carlos","nascimento":"1982-08-28","stack":["Ruby", "JavaScript", "PostgreSQL"]}'~
+
