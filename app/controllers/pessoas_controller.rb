@@ -1,6 +1,13 @@
 class PessoasController < ApplicationController
   skip_before_action :verify_authenticity_token, only: %i[ create ]
 
+  before_action :set_pessoa, only: %i[ show ]
+
+  # GET /pessoas/1
+  def show
+    render json: @pessoa
+  end
+
   # POST /pessoas
   def create
     @pessoa = Pessoa.new(pessoa_params)
@@ -13,6 +20,10 @@ class PessoasController < ApplicationController
   end
 
   private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_pessoa
+      @pessoa = Pessoa.find(params[:id])
+    end
 
     # Only allow a list of trusted parameters through.
     def pessoa_params

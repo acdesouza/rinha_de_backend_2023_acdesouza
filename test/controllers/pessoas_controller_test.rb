@@ -38,4 +38,11 @@ class PessoasControllerTest < ActionDispatch::IntegrationTest
     assert_equal "has already been taken", errors_hash.dig('errors', 'apelido')&.first
     assert_equal "can't be blank", errors_hash.dig('errors', 'nascimento')&.first
   end
+
+  test "should show pessoa" do
+    get pessoa_url(@pessoa)
+    assert_response :success
+
+    assert_equal @pessoa.to_json, response.body
+  end
 end
