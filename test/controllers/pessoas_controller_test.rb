@@ -45,4 +45,51 @@ class PessoasControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal @pessoa.to_json, response.body
   end
+
+  test "should require search term" do
+    get pessoas_url
+
+    assert_response :bad_request
+
+    assert_equal "query string `t` can't be blank", response.body
+  end
+
+  test "should find pessoas by apelido" do
+    get pessoas_url, params: {
+      t: "jo"
+    }
+
+    assert_response :success
+
+    expected_id_list = [pessoas(:one).id, pessoas(:three).id].sort
+    actual_id_list   = JSON.parse(response.body).map {|e| e['id']}.sort
+
+    assert_equal expected_id_list, actual_id_list
+  end
+
+  test "should find pessoas by nome" do
+    get pessoas_url, params: {
+      t: "barbosa"
+    }
+
+    assert_response :success
+
+    expected_id_list = [pessoas(:two).id, pessoas(:three).id]
+    actual_id_list   = JSON.parse(response.body).map {|e| e['id']}
+
+    assert_equal expected_id_list, actual_id_list
+  end
+
+  test "should find pessoas by stack" do
+    get pessoas_url, params: {
+      t: "Java"
+    }
+
+    assert_response :success
+
+    expected_id_list = [pessoas(:three).id]
+    actual_id_list   = JSON.parse(response.body).map {|e| e['id']}
+
+    assert_equal expected_id_list, actual_id_list
+  end
 end

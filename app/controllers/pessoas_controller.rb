@@ -3,6 +3,13 @@ class PessoasController < ApplicationController
 
   before_action :set_pessoa, only: %i[ show ]
 
+  # GET /pessoas
+  def index
+    render(plain: "query string `t` can't be blank", status: :bad_request) and return unless params[:t].present?
+
+    render json: Pessoa.search(params[:t])
+  end
+
   # GET /pessoas/1
   def show
     render json: @pessoa
