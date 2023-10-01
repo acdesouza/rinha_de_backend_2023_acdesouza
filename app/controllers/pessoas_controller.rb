@@ -17,7 +17,11 @@ class PessoasController < ApplicationController
 
   # POST /pessoas
   def create
-    @pessoa = Pessoa.new(pessoa_params)
+    begin
+      @pessoa = Pessoa.new(pessoa_params)
+    rescue ActionController::UnpermittedParameters
+      return render json: { errors: {stack: ["must be a list: '#{params[:pessoa][:stack]}'"]} }, status: :unprocessable_entity
+    end
 
     if @pessoa.save
       head :created, location: pessoa_path(@pessoa)
@@ -27,13 +31,13 @@ class PessoasController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_pessoa
-      @pessoa = Pessoa.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_pessoa
+    @pessoa = Pessoa.find(params[:id])
+  end
 
-    # Only allow a list of trusted parameters through.
-    def pessoa_params
-      params.require(:pessoa).permit(:apelido, :nome, :nascimento, :stack => [])
-    end
+  # Only allow a list of trusted parameters through.
+  def pessoa_params
+    params.require(:pessoa).permit(:apelido, :nome, :nascimento, stack: [])
+  end
 end

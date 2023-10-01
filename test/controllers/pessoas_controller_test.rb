@@ -39,6 +39,42 @@ class PessoasControllerTest < ActionDispatch::IntegrationTest
     assert_equal "can't be blank", errors_hash.dig('errors', 'nascimento')&.first
   end
 
+  test "should NOT create pessoa with invalid stack" do
+    assert_no_difference("Pessoa.count") do
+      post pessoas_url, params: {
+        pessoa: {
+          apelido: "NEW_APELIDO",
+          nome: "Antonio Carlos de Souza",
+          nascimento: "1982-08-28",
+          stack: "string instead of array"
+        }
+      }, as: :json
+    end
+
+    assert_response :unprocessable_entity
+
+    errors_hash = JSON.parse(response.body)
+
+    assert_equal "must be a list: 'string instead of array'", errors_hash.dig('errors', 'stack')&.first
+
+    assert_no_difference("Pessoa.count") do
+      post pessoas_url, params: {
+        pessoa: {
+          apelido: "NEW_APELIDO",
+          nome: "Antonio Carlos de Souza",
+          nascimento: "1982-08-28",
+          stack: 1
+        }
+      }, as: :json
+    end
+
+    assert_response :unprocessable_entity
+
+    errors_hash = JSON.parse(response.body)
+
+    assert_equal "must be a list: '1'", errors_hash.dig('errors', 'stack')&.first
+  end
+
   test "should show pessoa" do
     get pessoa_url(@pessoa)
     assert_response :success
